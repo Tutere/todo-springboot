@@ -19,4 +19,10 @@ public class Task {
     private Long id;
     private String content;
     private Boolean done;
+
+    public Task(String content) {
+        this.content = content;
+        this.done = false;
+    }
+
 }
