@@ -13,7 +13,10 @@ interface IProps {
 const TaskListComponent: React.FC<IProps> = ({tasks, setTasks}) => {
     //map uses return value whereas foreach wouldnt?
     return (
+        
        <Container> 
+            <hr></hr>
+            <h2 className="display-4">Tasks</h2>
             {tasks.map(task => <TaskComponent task={task} setTasks={setTasks}></TaskComponent>)} 
        </Container>
     )

@@ -4,6 +4,7 @@ import './App.css';
 import InputComponent from './components/inputComponent';
 import TaskListComponent from './components/TaskListComponent';
 import { API_BASE_URL } from './config';
+import { Container } from 'react-bootstrap';
 
 export interface ITask {
   id: number
@@ -28,12 +29,12 @@ const App: React.FC =() => {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <h1>Todo App</h1>
-      </header>
       <main>
-        <InputComponent setTask={setTasks}/>
-        <TaskListComponent tasks={tasks} setTasks={setTasks} />
+        <Container>
+          <h1 className="display-1 text-center">Todo App</h1>
+          <InputComponent setTask={setTasks}/>
+          <TaskListComponent tasks={tasks} setTasks={setTasks} />
+        </Container>
       </main>
     </div>
   );

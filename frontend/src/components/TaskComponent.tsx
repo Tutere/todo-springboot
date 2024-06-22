@@ -12,11 +12,14 @@ interface IProps {
 
 const TaskComponent: React.FC<IProps> = ({task, setTasks}) => {
     const markAsDone = () => {
-        const updatedTask: ITask = {...task, done:true}
+        const updatedTask: ITask = {...task, done:!task.done}
 
         const options = {
             method: 'PUT',
-            body: JSON.stringify(updatedTask)
+            body: JSON.stringify(updatedTask),
+            headers : {
+                'Content-Type': 'application/json'
+            }
         }
 
         fetch(`${API_BASE_URL}/tasks/${task.id}`,options)
