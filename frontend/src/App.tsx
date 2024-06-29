@@ -5,6 +5,8 @@ import InputComponent from './components/inputComponent';
 import TaskListComponent from './components/TaskListComponent';
 import { API_BASE_URL } from './config';
 import { Container } from 'react-bootstrap';
+import { addTask } from './store/tasks';
+import { useAppDispatch } from './store/root';
 
 export interface ITask {
   id: number
@@ -13,14 +15,14 @@ export interface ITask {
 }
 
 const App: React.FC =() => {
-  const [tasks, setTasks] = useState<ITask[]>([])
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     const options = {method: 'GET'}
 
     fetch(`${API_BASE_URL}/tasks`, options)
       .then(response => response.json())
-      .then(fetchedTasks => setTasks(fetchedTasks))
+      .then(fetchedTasks => fetchedTasks.forEach((task: ITask) => dispatch(addTask(task))))
       .catch(error => {
         console.log(error)
         alert("Couldn't fetch tasks")
@@ -32,8 +34,8 @@ const App: React.FC =() => {
       <main>
         <Container>
           <h1 className="display-1 text-center">Todo App</h1>
-          <InputComponent setTask={setTasks}/>
-          <TaskListComponent tasks={tasks} setTasks={setTasks} />
+          <InputComponent/>
+          <TaskListComponent/>
         </Container>
       </main>
     </div>

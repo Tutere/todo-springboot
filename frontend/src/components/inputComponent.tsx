@@ -3,22 +3,22 @@ import { API_BASE_URL } from "../config";
 import { response } from "express";
 import { ITask } from "../App";
 import { Button, Col, Row } from "react-bootstrap";
+import { addTask } from "../store/tasks";
+import { useAppDispatch } from "../store/root";
 
-interface IProps {
-    setTask: React.Dispatch<React.SetStateAction<ITask[]>>
-}
 
-const InputComponent: React.FC<IProps> = ({setTask}) => {
+const InputComponent: React.FC = () => {
     const [newTaskInput, setNewTaskInput] = useState<string>("")
+    const dispatch = useAppDispatch()
 
     const handleKeyPress = (event: DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>) => {
         if (event.key == 'Enter') {
-            addTask()
+            handleAddTask()
             setNewTaskInput('')
         }
     }
 
-    const addTask = () => {
+    const handleAddTask = () => {
         const options = {
             method: 'POST',
             body: newTaskInput,
@@ -26,11 +26,12 @@ const InputComponent: React.FC<IProps> = ({setTask}) => {
 
         fetch(`${API_BASE_URL}/tasks`, options)
         .then(response => response.json())
-        .then(newTask => setTask(prevState => [...prevState,newTask]))
+        .then(newTask => dispatch(addTask(newTask)))
         .catch(error => {
             console.log(error)
             alert("couldn't add task")
         })
+        setNewTaskInput('')
     }
 
     return (
@@ -46,7 +47,7 @@ const InputComponent: React.FC<IProps> = ({setTask}) => {
                 />
             </Col>
             <Col md={2}>
-                <Button onClick={addTask}> Add Task</Button>
+                <Button onClick={handleAddTask}> Add Task</Button>
             </Col>
             
         </Row>
