@@ -4,14 +4,17 @@ import { response } from "express";
 import { ITask } from "../App";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { resolve } from "path";
+import { deleteTask, updateTask } from "../store/tasks";
+import { useAppDispatch } from "../store/root";
 
 interface IProps {
     task: ITask
-    setTasks: React.Dispatch<React.SetStateAction<ITask[]>>
 }
 
-const TaskComponent: React.FC<IProps> = ({task, setTasks}) => {
-    const markAsDone = () => {
+const TaskComponent: React.FC<IProps> = ({task}) => {
+    const dispatch = useAppDispatch()
+    
+    const handleToggleStatus = () => {
         const updatedTask: ITask = {...task, done:!task.done}
 
         const options = {
@@ -24,21 +27,20 @@ const TaskComponent: React.FC<IProps> = ({task, setTasks}) => {
 
         fetch(`${API_BASE_URL}/tasks/${task.id}`,options)
             .then(response => response.json())
-            .then(updatedTask => 
-                setTasks(prevState => prevState.map(item => item.id === task.id ? updatedTask : item)))
+            .then(updatedTask => dispatch(updateTask(updatedTask)))
             .catch(error => {
                 console.log(error)
                 alert("couldn't update task")
             })
     }
 
-    const deleteTask = () => {
+    const handleDeleteTask = () => {
         const options ={method: 'DELETE'}
 
         fetch(`${API_BASE_URL}/tasks/${task.id}`,options)
             .then(response => {
                 if (response.ok) {
-                    setTasks(prevState => prevState.filter(item => item.id !== task.id)) //if item does not meet criteria then is excluded from the list 
+                    dispatch(deleteTask(task))
                 }
             })
             .catch(error => {
@@ -50,13 +52,13 @@ const TaskComponent: React.FC<IProps> = ({task, setTasks}) => {
     return (
       <Row>
         <Col md={2}>
-            <input type="checkbox" checked={task.done} onChange={markAsDone}/>
+            <input type="checkbox" checked={task.done} onChange={handleToggleStatus}/>
         </Col>
         <Col md={8}>
             <span>{task.content}</span>
         </Col>
         <Col md={2}>
-            <Button onClick={deleteTask}>
+            <Button onClick={handleDeleteTask}>
                 X
             </Button>
         </Col>
